@@ -1,17 +1,23 @@
+# Default values for theia.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
 replicaCount: 1
 
 image:
   repository: rishikoy/theiaide-full
   pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
   tag: "1.0.0-SNAPSHOT"
- 
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
+  # Specifies whether a service account should be created
   create: true
+  # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
@@ -20,25 +26,27 @@ serviceAccount:
 podAnnotations: {}
 
 podSecurityContext: {}
+  # fsGroup: 2000
 
-securityContext:
-  capabilities:
-    drop:
-    - ALL
-  readOnlyRootFilesystem: true
-  runAsNonRoot: false
-  runAsUser: 1000
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
 
 service:
   type: ClusterIP
   port: 80
   targetPort: 3000
+
 ingress:
   enabled: true
   className: ""
-  annotations: 
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "false"
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
   hosts:
     - host: checchia.grupo2.helm.jacexperts.io
       paths:
@@ -73,3 +81,22 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http 
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+configMap:
+  name: ""
+  create: true
+  data:
+    script01.sh: |
+      echo oi
+    script02.sh: |
+      echo treinamento
